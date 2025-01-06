@@ -1,8 +1,12 @@
 from fastapi import FastAPI
 from mangum import Mangum
+from .posts.router import router as posts_router
 
 app = FastAPI()
 handler = Mangum(app)
+
+app.include_router(posts_router, tags=["posts"])
+
 
 @app.get("/")
 async def read_root():
