@@ -6,9 +6,8 @@ from .schema import CreatePostSchema, UpdatePostSchema
 
 
 class PostsCrud:
-
-    def __init__(self, table_name: str = "Posts"):
-        self.dynamodb = boto3.resource("dynamodb")
+    def __init__(self, table_name: str = "Posts", region_name: str = "eu-north-1"):
+        self.dynamodb = boto3.resource("dynamodb", region_name=region_name)
         self.posts_table = self.dynamodb.Table(table_name)
 
     def create_post(self, data: CreatePostSchema):
@@ -16,9 +15,9 @@ class PostsCrud:
         now = datetime.now(timezone.utc).isoformat()
         item = {
             "id": post_id,
-            "title": data["title"],
-            "body": data["body"],
-            "tags": data.get("tags", []),
+            "title": data.title,
+            "body": data.body,
+            "tags": data.tags,
             "createdDate": now,
             "updatedDate": now,
         }
@@ -30,30 +29,23 @@ class PostsCrud:
         return response.get("Items", [])
 
     def get_post(self, post_id: UUID):
-        response = self.posts_table.get_item(Key={"id": post_id})
-        if "Item" not in response:
+        response = self.posts_table.get_item(Key={"id": str(post_id)})
+        item = response.get("Item")
+        if not item:
             raise HTTPException(status_code=404, detail="Post not found")
-        return response["Item"]
+        return item
 
     def update_post(self, post_id: UUID, data: UpdatePostSchema):
-        now = datetime.now(timezone.utc).isoformat()
-        update_expression = "SET "
-        expression_values = {}
-        expression_names = {}
-
-        for key, value in data.items():
-            if value is not None:
-                expression_names[f"#{key}"] = key
-                expression_values[f":{key}"] = value
-                update_expression += f"#{key} = :{key}, "
-
-        update_expression += "#updatedDate = :updatedDate"
-        expression_names["#updatedDate"] = "updatedDate"
-        expression_values[":updatedDate"] = now
-
+        update_data = data.model_dump(exclude_unset=True)
+        if not update_data:
+            raise HTTPException(status_code=400, detail="No data provided for update")
+        update_data["updatedDate"] = datetime.now(timezone.utc).isoformat()
+        update_expression = "SET " + ", ".join(f"#{k}=:{k}" for k in update_data.keys())
+        expression_values = {f":{k}": v for k, v in update_data.items()}
+        expression_names = {f"#{k}": k for k in update_data.keys()}
         try:
             response = self.posts_table.update_item(
-                Key={"id": post_id},
+                Key={"id": str(post_id)},
                 UpdateExpression=update_expression,
                 ExpressionAttributeNames=expression_names,
                 ExpressionAttributeValues=expression_values,
@@ -65,7 +57,7 @@ class PostsCrud:
 
     def delete_post(self, post_id: UUID):
         response = self.posts_table.delete_item(
-            Key={"id": post_id}, ReturnValues="ALL_OLD"
+            Key={"id": str(post_id)}, ReturnValues="ALL_OLD"
         )
         if "Attributes" not in response:
             raise HTTPException(status_code=404, detail="Post not found")
