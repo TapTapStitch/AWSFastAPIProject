@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Response
 from uuid import UUID
 from typing import List
-from .schema import PostSchema, CreatePostSchema, UpdatePostSchema
-from .crud import PostsCrud
+from app.posts.schema import PostSchema, CreatePostSchema, UpdatePostSchema
+from app.posts.crud import PostsCrud
 
 router = APIRouter()
 

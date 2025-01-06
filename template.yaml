@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: CloudFormation template for Diary Application (FAST API)
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaDDBAccessRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaBasicExecution
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: '*'
+        - PolicyName: LambdaDDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/posts'
+
+  PackageLayer:
+    Type: 'AWS::Serverless::LayerVersion'
+    Properties:
+      LayerName: package-layer
+      ContentUri: ./deploy/lambda_layer
+      CompatibleRuntimes:
+        - python3.13
+      RetentionPolicy: Retain
+
+  FASTAPIFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: FASTAPIFunction
+      Handler: main.handler
+      Runtime: python3.13
+      CodeUri: ./deploy/fastapi
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Layers:
+        - Ref: PackageLayer
+      FunctionUrlConfig:
+        AuthType: NONE
+
+  PostsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Posts
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from mangum import Mangum
-from .posts.router import router as posts_router
+from app.posts.router import router as posts_router
 
 app = FastAPI()
 handler = Mangum(app)

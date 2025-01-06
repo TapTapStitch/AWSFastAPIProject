@@ -2,7 +2,7 @@ import boto3
 from uuid import uuid4, UUID
 from datetime import datetime, timezone
 from fastapi import HTTPException
-from .schema import CreatePostSchema, UpdatePostSchema
+from app.posts.schema import CreatePostSchema, UpdatePostSchema
 
 
 class PostsCrud:
