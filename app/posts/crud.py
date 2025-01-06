@@ -2,7 +2,7 @@ import boto3
 from uuid import uuid4, UUID
 from datetime import datetime, timezone
 from fastapi import HTTPException
-from app.posts.schema import CreatePostSchema, UpdatePostSchema
+from app.posts.schema import CreatePostSchema, UpdatePostSchema, Params
 
 
 class PostsCrud:
@@ -24,9 +24,19 @@ class PostsCrud:
         self.posts_table.put_item(Item=item)
         return item
 
-    def get_posts(self):
+    def get_posts(self, params: Params):
         response = self.posts_table.scan()
-        return response.get("Items", [])
+        items = response.get("Items", [])
+        parsed_tags = params.parsed_tags()
+        if parsed_tags:
+            items = [
+                post
+                for post in items
+                if any(tag in post.get("tags", []) for tag in parsed_tags)
+            ]
+        if params.limit is not None:
+            items = items[: params.limit]
+        return items
 
     def get_post(self, post_id: UUID):
         response = self.posts_table.get_item(Key={"id": str(post_id)})
