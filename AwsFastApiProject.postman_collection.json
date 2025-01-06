@@ -1,0 +1,471 @@
+{
+	"info": {
+		"_postman_id": "1bff27c2-4c35-441b-a3bb-8004d1e12d62",
+		"name": "AwsFastApiProject",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26692977"
+	},
+	"item": [
+		{
+			"name": "Negative Scenarios",
+			"item": [
+				{
+					"name": "Create Post",
+					"item": [
+						{
+							"name": "When title is blank",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"\",\n    \"body\": \"This is the content of my new post.\",\n    \"tags\": [\"example\"]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/{{env}}/posts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"{{env}}",
+										"posts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "When body is blank",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"My New Post\",\n    \"body\": \"\",\n    \"tags\": [\"example\"]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/{{env}}/posts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"{{env}}",
+										"posts"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update Post",
+					"item": [
+						{
+							"name": "When id wrong",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"My New Post Updated\",\n    \"body\": \"This is\",\n    \"tags\": [\"example\"]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/{{env}}/post/some_wrong_id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"{{env}}",
+										"post",
+										"some_wrong_id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get Post",
+					"item": [
+						{
+							"name": "When id wrong",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/{{env}}/post/wrong_id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"{{env}}",
+										"post",
+										"wrong_id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete Post",
+					"item": [
+						{
+							"name": "When id wrong",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/{{env}}/post/wrong_id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"{{env}}",
+										"post",
+										"wrong_id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Get Posts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test for response status 200",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test for response to be JSON",
+							"pm.test(\"Response is JSON\", function () {",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"// Test for response body structure",
+							"pm.test(\"Response has expected structure\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    jsonData.forEach(item => {",
+							"        pm.expect(item).to.have.property('id').that.is.a('string');",
+							"        pm.expect(item).to.have.property('title').that.is.a('string');",
+							"        pm.expect(item).to.have.property('body').that.is.a('string');",
+							"        pm.expect(item).to.have.property('createdDate').that.is.a('string');",
+							"        pm.expect(item).to.have.property('updatedDate').that.is.a('string');",
+							"        pm.expect(item).to.have.property('tags').that.is.an('array');",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/{{env}}/posts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{env}}",
+						"posts"
+					],
+					"query": [
+						{
+							"key": "tags",
+							"value": "post",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test for response status 201",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Test for response to be JSON",
+							"pm.test(\"Response is JSON\", function () {",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"// Test for response body structure",
+							"pm.test(\"Response has expected structure\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData).to.have.property('id').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('title').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('body').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('createdDate').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('updatedDate').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('tags').that.is.an('array');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"My New Post\",\n    \"body\": \"This is the content of my new post.\",\n    \"tags\": [\"example\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/{{env}}/posts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{env}}",
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test for response status 200",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test for response to be JSON",
+							"pm.test(\"Response is JSON\", function () {",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"// Test for response body structure",
+							"pm.test(\"Response has expected structure\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData).to.have.property('id').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('title').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('body').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('createdDate').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('updatedDate').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('tags').that.is.an('array');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"My New Post Updated\",\n    \"body\": \"This is\",\n    \"tags\": [\"example\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/{{env}}/post/dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{env}}",
+						"post",
+						"dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test for response status 200",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test for response to be JSON",
+							"pm.test(\"Response is JSON\", function () {",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"// Test for response body structure",
+							"pm.test(\"Response has expected structure\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData).to.have.property('id').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('title').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('body').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('createdDate').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('updatedDate').that.is.a('string');",
+							"    pm.expect(jsonData).to.have.property('tags').that.is.an('array');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/{{env}}/post/dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{env}}",
+						"post",
+						"dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test for response status 204",
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"// Test for empty response body",
+							"pm.test(\"Response body is empty\", function () {",
+							"    pm.response.to.have.body(\"\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/{{env}}/post/dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{env}}",
+						"post",
+						"dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
