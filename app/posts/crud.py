@@ -49,25 +49,20 @@ class PostsCrud:
         update_data = data.model_dump(exclude_unset=True)
         if not update_data:
             raise HTTPException(status_code=400, detail="No data provided for update")
+        self.get_post(post_id)
         update_data["updatedDate"] = datetime.now(timezone.utc).isoformat()
         update_expression = "SET " + ", ".join(f"#{k}=:{k}" for k in update_data.keys())
         expression_values = {f":{k}": v for k, v in update_data.items()}
         expression_names = {f"#{k}": k for k in update_data.keys()}
-        try:
-            response = self.posts_table.update_item(
-                Key={"id": str(post_id)},
-                UpdateExpression=update_expression,
-                ExpressionAttributeNames=expression_names,
-                ExpressionAttributeValues=expression_values,
-                ReturnValues="ALL_NEW",
-            )
-        except self.posts_table.meta.client.exceptions.ConditionalCheckFailedException:
-            raise HTTPException(status_code=404, detail="Post not found")
+        response = self.posts_table.update_item(
+            Key={"id": str(post_id)},
+            UpdateExpression=update_expression,
+            ExpressionAttributeNames=expression_names,
+            ExpressionAttributeValues=expression_values,
+            ReturnValues="ALL_NEW",
+        )
         return response["Attributes"]
 
     def delete_post(self, post_id: UUID):
-        response = self.posts_table.delete_item(
-            Key={"id": str(post_id)}, ReturnValues="ALL_OLD"
-        )
-        if "Attributes" not in response:
-            raise HTTPException(status_code=404, detail="Post not found")
+        self.get_post(post_id)
+        self.posts_table.delete_item(Key={"id": str(post_id)})
