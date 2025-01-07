@@ -1,28 +1,7 @@
-import boto3
-from moto import mock_aws
 import pytest
 from uuid import uuid4, UUID
 from fastapi import HTTPException
-from app.posts.crud import PostsCrud
 from app.posts.schema import CreatePostSchema, UpdatePostSchema, Params
-
-
-@pytest.fixture
-def dynamodb():
-    with mock_aws():
-        dynamodb = boto3.resource("dynamodb", region_name="eu-north-1")
-        table = dynamodb.create_table(
-            TableName="Posts",
-            KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
-            AttributeDefinitions=[{"AttributeName": "id", "AttributeType": "S"}],
-            ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
-        )
-        table.meta.client.get_waiter("table_exists").wait(TableName="Posts")
-        yield dynamodb
-
-@pytest.fixture(scope="function")
-def posts_crud(dynamodb):
-    return PostsCrud(table_name="Posts", region_name="eu-north-1")
 
 
 def test_create_post(posts_crud):
