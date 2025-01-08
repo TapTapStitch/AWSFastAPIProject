@@ -9,6 +9,7 @@ from app.posts.schema import (
     Params,
 )
 from app.posts.crud import PostsCrud
+from app.auth.service import AuthService
 
 router = APIRouter()
 
@@ -19,7 +20,9 @@ def get_posts_crud():
 
 @router.get("/posts", response_model=List[PostSchema])
 async def get_posts(
-    params: Params = Depends(), posts_crud: PostsCrud = Depends(get_posts_crud)
+    params: Params = Depends(),
+    posts_crud: PostsCrud = Depends(get_posts_crud),
+    authenticated: dict = Depends(AuthService().authenticate_user),
 ):
     return posts_crud.get_posts(params)
 

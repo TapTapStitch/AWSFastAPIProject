@@ -4,15 +4,17 @@ import hashlib
 import base64
 import jwt
 from datetime import datetime, timedelta, timezone
-from fastapi import HTTPException
+from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
 from app.config import env_vars
+
+
+oauth2_schema = OAuth2PasswordBearer(tokenUrl="signin")
 
 
 class AuthService:
     def __init__(self):
         self.cognito_client = boto3.client("cognito-idp", region_name=env_vars.REGION)
-        self.oauth2_schema = OAuth2PasswordBearer(tokenUrl="token")
 
     def calculate_secret_hash(self, username: str) -> str:
         message = username + env_vars.CLIENT_ID
@@ -28,7 +30,10 @@ class AuthService:
         }
         return jwt.encode(payload, env_vars.JWT_SECRET, algorithm="HS256")
 
-    def decode_jwt_token(self, token: str):
+    def authenticate_user(self, token: str = Depends(oauth2_schema)):
+        return self._decode_jwt_token(token)
+
+    def _decode_jwt_token(self, token: str):
         try:
             payload = jwt.decode(token, env_vars.JWT_SECRET, algorithms=["HS256"])
             return payload
