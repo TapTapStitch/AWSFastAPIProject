@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DEPLOY_DIR="deploy"
-PROJECT_NAME="aws_fastapi_project"
+PROJECT_NAME="AwsFastapiProject"
 
 mkdir -p "$DEPLOY_DIR/fastapi/app"
 
