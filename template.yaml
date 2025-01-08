@@ -37,7 +37,7 @@ Resources:
                   - dynamodb:DeleteItem
                   - dynamodb:Query
                   - dynamodb:Scan
-                Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/posts'
+                Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/Posts'
 
   PackageLayer:
     Type: 'AWS::Serverless::LayerVersion'

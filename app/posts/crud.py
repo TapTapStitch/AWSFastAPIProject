@@ -2,7 +2,7 @@ import boto3
 from uuid import uuid4, UUID
 from datetime import datetime, timezone
 from fastapi import HTTPException
-from app.posts.schema import CreatePostSchema, UpdatePostSchema, Params
+from app.posts.schema import PostSchema, CreatePostSchema, UpdatePostSchema, Params
 
 
 class PostsCrud:
@@ -27,16 +27,17 @@ class PostsCrud:
     def get_posts(self, params: Params):
         response = self.posts_table.scan()
         items = response.get("Items", [])
+        formatted_items = [self._format_post_data(item) for item in items]
         parsed_tags = params.parsed_tags()
         if parsed_tags:
-            items = [
+            formatted_items = [
                 post
-                for post in items
+                for post in formatted_items
                 if any(tag in post.get("tags", []) for tag in parsed_tags)
             ]
         if params.limit is not None:
-            items = items[: params.limit]
-        return items
+            formatted_items = formatted_items[: params.limit]
+        return formatted_items
 
     def get_post(self, post_id: UUID):
         response = self.posts_table.get_item(Key={"id": str(post_id)})
@@ -66,3 +67,13 @@ class PostsCrud:
     def delete_post(self, post_id: UUID):
         self.get_post(post_id)
         self.posts_table.delete_item(Key={"id": str(post_id)})
+
+    def _format_post_data(self, post_data):
+        return PostSchema(
+            id=post_data.get("id"),
+            title=post_data.get("title"),
+            body=post_data.get("body"),
+            createdDate=post_data.get("createdDate"),
+            updatedDate=post_data.get("updatedDate"),
+            tags=post_data.get("tags", []),
+        ).model_dump()
