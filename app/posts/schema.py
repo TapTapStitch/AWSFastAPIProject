@@ -14,6 +14,14 @@ class PostSchema(BaseModel):
     updatedDate: datetime
 
 
+class PublicPostSchema(BaseModel):
+    title: str
+    body: str
+    tags: List[str]
+    createdDate: datetime
+    updatedDate: datetime
+
+
 class CreatePostSchema(BaseModel):
     title: str = Field(..., max_length=200)
     body: str = Field(..., max_length=2000)

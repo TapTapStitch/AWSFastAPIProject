@@ -1,7 +1,13 @@
 from fastapi import APIRouter, Depends, Response
 from uuid import UUID
 from typing import List
-from app.posts.schema import PostSchema, CreatePostSchema, UpdatePostSchema, Params
+from app.posts.schema import (
+    PostSchema,
+    PublicPostSchema,
+    CreatePostSchema,
+    UpdatePostSchema,
+    Params,
+)
 from app.posts.crud import PostsCrud
 
 router = APIRouter()
@@ -16,6 +22,13 @@ async def get_posts(
     params: Params = Depends(), posts_crud: PostsCrud = Depends(get_posts_crud)
 ):
     return posts_crud.get_posts(params)
+
+
+@router.get("/public/posts", response_model=List[PublicPostSchema])
+async def get_posts(
+    params: Params = Depends(), posts_crud: PostsCrud = Depends(get_posts_crud)
+):
+    return posts_crud.get_posts(params, public=True)
 
 
 @router.post("/posts", response_model=PostSchema, status_code=201)
