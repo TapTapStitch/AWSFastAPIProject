@@ -10,7 +10,7 @@ from app.posts.schema import (
 )
 from app.posts.crud import PostsCrud
 from app.auth.service import AuthService
-from app.posts.swagger_responces import (
+from app.posts.swagger_responses import (
     unauthorized_response,
     not_found_response,
     bad_request_response,
