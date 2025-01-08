@@ -10,6 +10,11 @@ from app.posts.schema import (
 )
 from app.posts.crud import PostsCrud
 from app.auth.service import AuthService
+from app.posts.swagger_responces import (
+    unauthorized_response,
+    not_found_response,
+    bad_request_response,
+)
 
 router = APIRouter()
 
@@ -18,7 +23,7 @@ def get_posts_crud():
     return PostsCrud()
 
 
-@router.get("/posts", response_model=List[PostSchema])
+@router.get("/posts", response_model=List[PostSchema], responses=unauthorized_response)
 async def get_posts(
     params: Params = Depends(),
     posts_crud: PostsCrud = Depends(get_posts_crud),
@@ -34,9 +39,16 @@ async def get_posts(
     return posts_crud.get_posts(params, public=True)
 
 
-@router.post("/posts", response_model=PostSchema, status_code=201)
+@router.post(
+    "/posts",
+    response_model=PostSchema,
+    status_code=201,
+    responses=unauthorized_response,
+)
 async def create_post(
-    post: CreatePostSchema, posts_crud: PostsCrud = Depends(get_posts_crud)
+    post: CreatePostSchema,
+    posts_crud: PostsCrud = Depends(get_posts_crud),
+    authenticated: dict = Depends(AuthService().authenticate_user),
 ):
     return posts_crud.create_post(post)
 
@@ -44,23 +56,13 @@ async def create_post(
 @router.get(
     "/post/{id}",
     response_model=PostSchema,
-    responses={
-        "404": {
-            "description": "Not Found",
-            "content": {
-                "application/json": {
-                    "examples": {
-                        "post_not_found": {
-                            "summary": "Post not found",
-                            "value": {"detail": "Post not found"},
-                        }
-                    }
-                }
-            },
-        }
-    },
+    responses={**unauthorized_response, **not_found_response},
 )
-async def get_post(id: UUID, posts_crud: PostsCrud = Depends(get_posts_crud)):
+async def get_post(
+    id: UUID,
+    posts_crud: PostsCrud = Depends(get_posts_crud),
+    authenticated: dict = Depends(AuthService().authenticate_user),
+):
     return posts_crud.get_post(id)
 
 
@@ -68,36 +70,16 @@ async def get_post(id: UUID, posts_crud: PostsCrud = Depends(get_posts_crud)):
     "/post/{id}",
     response_model=PostSchema,
     responses={
-        "404": {
-            "description": "Not Found",
-            "content": {
-                "application/json": {
-                    "examples": {
-                        "post_not_found": {
-                            "summary": "Post not found",
-                            "value": {"detail": "Post not found"},
-                        }
-                    }
-                }
-            },
-        },
-        "400": {
-            "description": "Bad Request",
-            "content": {
-                "application/json": {
-                    "examples": {
-                        "no_data_provided": {
-                            "summary": "No data provided for update",
-                            "value": {"detail": "No data provided for update"},
-                        }
-                    }
-                }
-            },
-        },
+        **unauthorized_response,
+        **not_found_response,
+        **bad_request_response,
     },
 )
 async def update_post(
-    id: UUID, post: UpdatePostSchema, posts_crud: PostsCrud = Depends(get_posts_crud)
+    id: UUID,
+    post: UpdatePostSchema,
+    posts_crud: PostsCrud = Depends(get_posts_crud),
+    authenticated: dict = Depends(AuthService().authenticate_user),
 ):
     return posts_crud.update_post(id, post)
 
@@ -105,22 +87,12 @@ async def update_post(
 @router.delete(
     "/post/{id}",
     status_code=204,
-    responses={
-        "404": {
-            "description": "Not Found",
-            "content": {
-                "application/json": {
-                    "examples": {
-                        "post_not_found": {
-                            "summary": "Post not found",
-                            "value": {"detail": "Post not found"},
-                        }
-                    }
-                }
-            },
-        }
-    },
+    responses={**unauthorized_response, **not_found_response},
 )
-async def delete_post(id: UUID, posts_crud: PostsCrud = Depends(get_posts_crud)):
+async def delete_post(
+    id: UUID,
+    posts_crud: PostsCrud = Depends(get_posts_crud),
+    authenticated: dict = Depends(AuthService().authenticate_user),
+):
     posts_crud.delete_post(id)
     return Response(status_code=204)

@@ -29,7 +29,10 @@ def get_auth_service():
         },
     },
 )
-def signup(user: SignUp = Depends(SignUp.as_form), auth_service: AuthService = Depends(get_auth_service)):
+def signup(
+    user: SignUp = Depends(SignUp.as_form),
+    auth_service: AuthService = Depends(get_auth_service),
+):
     try:
         auth_service.cognito_client.sign_up(
             ClientId=env_vars.CLIENT_ID,
@@ -67,7 +70,8 @@ def signup(user: SignUp = Depends(SignUp.as_form), auth_service: AuthService = D
     },
 )
 def confirm(
-    user: ConfirmAccount = Depends(ConfirmAccount.as_form), auth_service: AuthService = Depends(get_auth_service)
+    user: ConfirmAccount = Depends(ConfirmAccount.as_form),
+    auth_service: AuthService = Depends(get_auth_service),
 ):
     try:
         auth_service.cognito_client.confirm_sign_up(
