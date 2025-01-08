@@ -128,6 +128,6 @@ def signin(user: SignIn, auth_service: AuthService = Depends(get_auth_service)):
         token = auth_service.create_jwt_token(user.username)
         return {"access_token": token, "token_type": "bearer"}
     except auth_service.cognito_client.exceptions.NotAuthorizedException as e:
-        raise HTTPException(status_code=401, detail=str(e))
+        raise HTTPException(status_code=401, detail="Invalid username or password")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
