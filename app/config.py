@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     REGION: str
     JWT_SECRET: str
     CLIENT_SECRET: str
+    TABLE_NAME: str
 
     model_config = SettingsConfigDict(env_file=".env")
 

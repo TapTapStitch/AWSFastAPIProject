@@ -9,12 +9,13 @@ from app.posts.schema import (
     UpdatePostSchema,
     Params,
 )
+from app.config import env_vars
 
 
 class PostsCrud:
-    def __init__(self, table_name: str = "Posts", region_name: str = "eu-north-1"):
-        self.dynamodb = boto3.resource("dynamodb", region_name=region_name)
-        self.posts_table = self.dynamodb.Table(table_name)
+    def __init__(self):
+        self.dynamodb = boto3.resource("dynamodb", region_name=env_vars.REGION)
+        self.posts_table = self.dynamodb.Table(env_vars.TABLE_NAME)
 
     def create_post(self, data: CreatePostSchema):
         post_id = str(uuid4())

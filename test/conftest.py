@@ -24,7 +24,7 @@ def dynamodb():
 
 @pytest.fixture(scope="function")
 def posts_crud(dynamodb):
-    return PostsCrud(table_name="Posts", region_name="eu-north-1")
+    return PostsCrud()
 
 
 @pytest.fixture(scope="function")
