@@ -1,2 +1,5 @@
 fastapi
 mangum
+pyjwt
+pydantic_settings
+python-multipart

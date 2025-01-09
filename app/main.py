@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from mangum import Mangum
 from app.posts.router import router as posts_router
+from app.auth.router import router as auth_router
 
 app = FastAPI()
 
 app.include_router(posts_router, tags=["posts"])
+app.include_router(auth_router, tags=["auth"])
 
 
 @app.get("/")

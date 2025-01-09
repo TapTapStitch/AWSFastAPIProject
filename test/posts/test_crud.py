@@ -26,6 +26,18 @@ def test_get_posts(posts_crud):
     assert result[0]["title"] == "Title1"
 
 
+def test_get_public_posts(posts_crud):
+    data1 = CreatePostSchema(title="Title1", body="Body1", tags=["tag1"])
+    data2 = CreatePostSchema(title="Title2", body="Body2", tags=["tag2"])
+    posts_crud.create_post(data1)
+    posts_crud.create_post(data2)
+    params = Params()
+    result = posts_crud.get_posts(params, public=True)
+    assert len(result) == 2
+    assert not "id" in result[0]
+    assert not "id" in result[1]
+
+
 def test_get_post(posts_crud):
     data = CreatePostSchema(title="Test Title", body="Test Body", tags=["tag1"])
     created_post = posts_crud.create_post(data)
