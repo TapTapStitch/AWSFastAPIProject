@@ -20,3 +20,6 @@ sam deploy \
     --capabilities CAPABILITY_NAMED_IAM
 
 rm -r "$DEPLOY_DIR"
+
+echo "Deployed successfully"
+echo "Fill .env file with environment variables from deploy response to make app work!!!"

@@ -25,6 +25,7 @@ def test_get_posts(posts_crud):
     assert len(result) == 1
     assert result[0]["title"] == "Title1"
 
+
 def test_get_public_posts(posts_crud):
     data1 = CreatePostSchema(title="Title1", body="Body1", tags=["tag1"])
     data2 = CreatePostSchema(title="Title2", body="Body2", tags=["tag2"])
