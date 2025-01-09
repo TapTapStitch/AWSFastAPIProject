@@ -6,6 +6,7 @@ PROJECT_NAME="AwsFastapiProject"
 mkdir -p "$DEPLOY_DIR/fastapi/app"
 
 cp app/main.py "$DEPLOY_DIR/fastapi/"
+cp .env.example "$DEPLOY_DIR/fastapi/.env"
 touch "$DEPLOY_DIR/fastapi/__init__.py"
 
 rsync -av --exclude='main.py' app/ "$DEPLOY_DIR/fastapi/app/"
