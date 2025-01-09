@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1bff27c2-4c35-441b-a3bb-8004d1e12d62",
+		"_postman_id": "845e491d-b1d3-4992-947b-2d618c776bda",
 		"name": "AwsFastApiProject",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "26692977"
@@ -16,7 +16,14 @@
 							"name": "When title is blank",
 							"request": {
 								"auth": {
-									"type": "noauth"
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
 								},
 								"method": "POST",
 								"header": [],
@@ -30,12 +37,11 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/{{env}}/posts",
+									"raw": "{{baseUrl}}/posts",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"{{env}}",
 										"posts"
 									]
 								}
@@ -46,7 +52,14 @@
 							"name": "When body is blank",
 							"request": {
 								"auth": {
-									"type": "noauth"
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
 								},
 								"method": "POST",
 								"header": [],
@@ -60,12 +73,11 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/{{env}}/posts",
+									"raw": "{{baseUrl}}/posts",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"{{env}}",
 										"posts"
 									]
 								}
@@ -77,6 +89,104 @@
 				{
 					"name": "Update Post",
 					"item": [
+						{
+							"name": "When title blank",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"\",\n    \"body\": \"This is\",\n    \"tags\": [\"example\"]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/post/dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"post",
+										"dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "When body blank",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Some title\",\n    \"body\": \"\",\n    \"tags\": [\"example\"]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/post/dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"post",
+										"dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682"
+									]
+								}
+							},
+							"response": []
+						},
 						{
 							"name": "When id wrong",
 							"event": [
@@ -93,7 +203,14 @@
 							],
 							"request": {
 								"auth": {
-									"type": "noauth"
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
 								},
 								"method": "PATCH",
 								"header": [],
@@ -107,12 +224,11 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/{{env}}/post/some_wrong_id",
+									"raw": "{{baseUrl}}/post/some_wrong_id",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"{{env}}",
 										"post",
 										"some_wrong_id"
 									]
@@ -129,17 +245,23 @@
 							"name": "When id wrong",
 							"request": {
 								"auth": {
-									"type": "noauth"
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
 								},
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/{{env}}/post/wrong_id",
+									"raw": "{{baseUrl}}/post/wrong_id",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"{{env}}",
 										"post",
 										"wrong_id"
 									]
@@ -156,17 +278,23 @@
 							"name": "When id wrong",
 							"request": {
 								"auth": {
-									"type": "noauth"
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
 								},
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/{{env}}/post/wrong_id",
+									"raw": "{{baseUrl}}/post/wrong_id",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"{{env}}",
 										"post",
 										"wrong_id"
 									]
@@ -216,17 +344,23 @@
 			],
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
 				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/{{env}}/posts",
+					"raw": "{{baseUrl}}/posts",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"{{env}}",
 						"posts"
 					],
 					"query": [
@@ -282,7 +416,14 @@
 			],
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
 				},
 				"method": "POST",
 				"header": [],
@@ -296,12 +437,11 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/{{env}}/posts",
+					"raw": "{{baseUrl}}/posts",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"{{env}}",
 						"posts"
 					]
 				}
@@ -344,7 +484,14 @@
 			],
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
 				},
 				"method": "PATCH",
 				"header": [],
@@ -358,12 +505,11 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/{{env}}/post/dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682",
+					"raw": "{{baseUrl}}/post/dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"{{env}}",
 						"post",
 						"dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682"
 					]
@@ -407,17 +553,23 @@
 			],
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
 				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/{{env}}/post/dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682",
+					"raw": "{{baseUrl}}/post/dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"{{env}}",
 						"post",
 						"dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682"
 					]
@@ -449,19 +601,258 @@
 			],
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
 				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/{{env}}/post/dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682",
+					"raw": "{{baseUrl}}/post/dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"{{env}}",
 						"post",
 						"dfc9ec9c-85d0-4ef1-ac3a-7955d5afa682"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Posts Public",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test for response status 200",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test for response to be JSON",
+							"pm.test(\"Response is JSON\", function () {",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"// Test for response body structure",
+							"pm.test(\"Response has expected structure\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    jsonData.forEach(item => {",
+							"        pm.expect(item).to.have.property('title').that.is.a('string');",
+							"        pm.expect(item).to.have.property('body').that.is.a('string');",
+							"        pm.expect(item).to.have.property('createdDate').that.is.a('string');",
+							"        pm.expect(item).to.have.property('updatedDate').that.is.a('string');",
+							"        pm.expect(item).to.have.property('tags').that.is.an('array');",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/posts/public",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts",
+						"public"
+					],
+					"query": [
+						{
+							"key": "tags",
+							"value": "post",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "5",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign In",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test for response status 200",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test for response to be JSON",
+							"pm.test(\"Response is JSON\", function () {",
+							"    pm.response.to.be.json;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "SomeExampleName",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "SomePass1234*",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/signin",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test for response status 200",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test for response to be JSON",
+							"pm.test(\"Response is JSON\", function () {",
+							"    pm.response.to.be.json;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "SomeExampleName",
+							"type": "text"
+						},
+						{
+							"key": "confirmation_code",
+							"value": "123456",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/confirm",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"confirm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign Up",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test for response status 201",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Test for response to be JSON",
+							"pm.test(\"Response is JSON\", function () {",
+							"    pm.response.to.be.json;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "SomeExampleName",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "SomePass1234*",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "someemail@gmail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/signup",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"signup"
 					]
 				}
 			},
