@@ -1,13 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends, Response
 from app.auth.schema import SignUp, ConfirmAccount, SignIn, Token
-from app.auth.service import AuthService
+from app.auth.service import calculate_secret_hash, create_jwt_token, cognito_client
 from app.config import env_vars
 
 router = APIRouter()
-
-
-def get_auth_service():
-    return AuthService()
 
 
 @router.post(
@@ -29,14 +25,11 @@ def get_auth_service():
         },
     },
 )
-def signup(
-    user: SignUp = Depends(SignUp.as_form),
-    auth_service: AuthService = Depends(get_auth_service),
-):
+def signup(user: SignUp = Depends(SignUp.as_form)):
     try:
-        auth_service.cognito_client.sign_up(
+        cognito_client.sign_up(
             ClientId=env_vars.CLIENT_ID,
-            SecretHash=auth_service.calculate_secret_hash(user.username),
+            SecretHash=calculate_secret_hash(user.username),
             Username=user.username,
             Password=user.password,
             UserAttributes=[
@@ -44,7 +37,7 @@ def signup(
             ],
         )
         return Response(status_code=201)
-    except auth_service.cognito_client.exceptions.UsernameExistsException:
+    except cognito_client.exceptions.UsernameExistsException:
         raise HTTPException(status_code=400, detail="Username already exists")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -69,14 +62,11 @@ def signup(
         },
     },
 )
-def confirm(
-    user: ConfirmAccount = Depends(ConfirmAccount.as_form),
-    auth_service: AuthService = Depends(get_auth_service),
-):
+def confirm(user: ConfirmAccount = Depends(ConfirmAccount.as_form)):
     try:
-        auth_service.cognito_client.confirm_sign_up(
+        cognito_client.confirm_sign_up(
             ClientId=env_vars.CLIENT_ID,
-            SecretHash=auth_service.calculate_secret_hash(user.username),
+            SecretHash=calculate_secret_hash(user.username),
             Username=user.username,
             ConfirmationCode=user.confirmation_code,
         )
@@ -118,23 +108,20 @@ def confirm(
         },
     },
 )
-def signin(
-    user: SignIn = Depends(SignIn.as_form),
-    auth_service: AuthService = Depends(get_auth_service),
-):
+def signin(user: SignIn = Depends(SignIn.as_form)):
     try:
-        auth_service.cognito_client.initiate_auth(
+        cognito_client.initiate_auth(
             ClientId=env_vars.CLIENT_ID,
             AuthFlow="USER_PASSWORD_AUTH",
             AuthParameters={
                 "USERNAME": user.username,
                 "PASSWORD": user.password,
-                "SECRET_HASH": auth_service.calculate_secret_hash(user.username),
+                "SECRET_HASH": calculate_secret_hash(user.username),
             },
         )
-        token = auth_service.create_jwt_token(user.username)
+        token = create_jwt_token(user.username)
         return {"access_token": token, "token_type": "bearer"}
-    except auth_service.cognito_client.exceptions.NotAuthorizedException as e:
+    except cognito_client.exceptions.NotAuthorizedException as e:
         raise HTTPException(status_code=401, detail="Invalid username or password")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

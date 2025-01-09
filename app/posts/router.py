@@ -9,7 +9,7 @@ from app.posts.schema import (
     Params,
 )
 from app.posts.crud import PostsCrud
-from app.auth.service import AuthService
+from app.auth.service import authenticate_user
 from app.posts.swagger_responses import (
     unauthorized_response,
     not_found_response,
@@ -27,7 +27,7 @@ def get_posts_crud():
 async def get_posts(
     params: Params = Depends(),
     posts_crud: PostsCrud = Depends(get_posts_crud),
-    authenticated: dict = Depends(AuthService().authenticate_user),
+    authenticated: dict = Depends(authenticate_user),
 ):
     return posts_crud.get_posts(params)
 
@@ -48,7 +48,7 @@ async def get_posts(
 async def create_post(
     post: CreatePostSchema,
     posts_crud: PostsCrud = Depends(get_posts_crud),
-    authenticated: dict = Depends(AuthService().authenticate_user),
+    authenticated: dict = Depends(authenticate_user),
 ):
     return posts_crud.create_post(post)
 
@@ -61,7 +61,7 @@ async def create_post(
 async def get_post(
     id: UUID,
     posts_crud: PostsCrud = Depends(get_posts_crud),
-    authenticated: dict = Depends(AuthService().authenticate_user),
+    authenticated: dict = Depends(authenticate_user),
 ):
     return posts_crud.get_post(id)
 
@@ -79,7 +79,7 @@ async def update_post(
     id: UUID,
     post: UpdatePostSchema,
     posts_crud: PostsCrud = Depends(get_posts_crud),
-    authenticated: dict = Depends(AuthService().authenticate_user),
+    authenticated: dict = Depends(authenticate_user),
 ):
     return posts_crud.update_post(id, post)
 
@@ -92,7 +92,7 @@ async def update_post(
 async def delete_post(
     id: UUID,
     posts_crud: PostsCrud = Depends(get_posts_crud),
-    authenticated: dict = Depends(AuthService().authenticate_user),
+    authenticated: dict = Depends(authenticate_user),
 ):
     posts_crud.delete_post(id)
     return Response(status_code=204)

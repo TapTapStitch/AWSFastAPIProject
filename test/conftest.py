@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 from app.posts.crud import PostsCrud
 from app.main import app
 from app.posts.router import get_posts_crud
+from app.auth.service import authenticate_user
 
 
 @pytest.fixture
@@ -32,3 +33,10 @@ def client(posts_crud):
     client = TestClient(app)
     yield client
     app.dependency_overrides.pop(get_posts_crud)
+
+
+@pytest.fixture(scope="function")
+def authenticated_client(client):
+    app.dependency_overrides[authenticate_user] = lambda: {"sub": "test_user"}
+    yield client
+    app.dependency_overrides.pop(authenticate_user)
