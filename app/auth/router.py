@@ -25,7 +25,7 @@ router = APIRouter()
         },
     },
 )
-def signup(user: SignUp = Depends(SignUp.as_form)):
+async def signup(user: SignUp = Depends(SignUp.as_form)):
     try:
         cognito_client.sign_up(
             ClientId=env_vars.CLIENT_ID,
@@ -62,7 +62,7 @@ def signup(user: SignUp = Depends(SignUp.as_form)):
         },
     },
 )
-def confirm(user: ConfirmAccount = Depends(ConfirmAccount.as_form)):
+async def confirm(user: ConfirmAccount = Depends(ConfirmAccount.as_form)):
     try:
         cognito_client.confirm_sign_up(
             ClientId=env_vars.CLIENT_ID,
@@ -108,7 +108,7 @@ def confirm(user: ConfirmAccount = Depends(ConfirmAccount.as_form)):
         },
     },
 )
-def signin(user: SignIn = Depends(SignIn.as_form)):
+async def signin(user: SignIn = Depends(SignIn.as_form)):
     try:
         cognito_client.initiate_auth(
             ClientId=env_vars.CLIENT_ID,
