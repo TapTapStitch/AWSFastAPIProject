@@ -1,4 +1,5 @@
-fastapi[standard]
+fastapi
+uvicorn
 boto3
 pyjwt
 pydantic_settings
