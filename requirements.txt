@@ -1,4 +1,4 @@
-fastapi
+fastapi[standard]
 pyjwt
 pydantic_settings
 python-multipart
