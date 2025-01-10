@@ -1,4 +1,3 @@
-import boto3
 from uuid import uuid4, UUID
 from datetime import datetime, timezone
 from fastapi import HTTPException
@@ -10,11 +9,12 @@ from app.posts.schema import (
     Params,
 )
 from app.config import env_vars
+from app.session import session
 
 
 class PostsCrud:
     def __init__(self):
-        self.dynamodb = boto3.resource("dynamodb", region_name=env_vars.REGION)
+        self.dynamodb = session.resource("dynamodb")
         self.posts_table = self.dynamodb.Table(env_vars.TABLE_NAME)
 
     def create_post(self, data: CreatePostSchema):
