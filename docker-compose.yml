@@ -1,4 +1,4 @@
-x-image-name: &image-name myimage
+x-image-name: &image-name mykytazub/aws-fastapi-project:latest
 x-common-env: &common-env
   AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
   AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
