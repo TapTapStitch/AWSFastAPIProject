@@ -1,3 +1,6 @@
 .idea
 .coverage
 .env
+*backend.tf
+*.terraform*
+*terraform.*
