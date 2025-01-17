@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     JWT_SECRET: str
     CLIENT_SECRET: str
     TABLE_NAME: str
+    AWS_ACCOUNT_ID: str
 
     model_config = SettingsConfigDict(env_file=".env")
 
