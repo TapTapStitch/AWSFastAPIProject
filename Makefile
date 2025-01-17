@@ -16,6 +16,9 @@ setup-ecr:
 deploy-container:
 	sh deploy.sh
 
+deploy-accessories:
+    sh deploy-accessories.sh
+
 deploy-service:
 	cd infra/app && terraform init && terraform apply -auto-approve
 
