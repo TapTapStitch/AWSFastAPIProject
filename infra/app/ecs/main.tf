@@ -136,6 +136,36 @@ resource "aws_ecs_task_definition" "api" {
           awslogs-region        = var.region
         }
       }
+      environment = [
+        {
+          name  = "AWS_ACCESS_KEY_ID"
+          value = var.aws_access_key_id
+        },
+        {
+          name  = "AWS_SECRET_ACCESS_KEY"
+          value = var.aws_secret_access_key
+        },
+        {
+          name  = "JWT_SECRET"
+          value = var.jwt_secret
+        },
+        {
+          name  = "CLIENT_ID"
+          value = var.client_id
+        },
+        {
+          name  = "CLIENT_SECRET"
+          value = var.client_secret
+        },
+        {
+          name  = "TABLE_NAME"
+          value = var.table_name
+        },
+        {
+          name  = "REGION"
+          value = var.region
+        }
+      ]
     }
   ])
 }
