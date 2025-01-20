@@ -7,10 +7,11 @@ from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
 from app.config import env_vars
+from app.session import session
 
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="signin")
-cognito_client = boto3.client("cognito-idp", region_name=env_vars.REGION)
+cognito_client = session.client("cognito-idp", region_name=env_vars.REGION)
 
 
 def calculate_secret_hash(username: str) -> str:

@@ -1,25 +1,12 @@
 #!/bin/bash
+echo "Logging in to ECR"
+aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com
 
-DEPLOY_DIR="deploy"
-PROJECT_NAME="AwsFastapiProject"
+echo "Building image"
+docker build --no-cache --platform=linux/amd64 -t $REGISTRY_NAME .
 
-mkdir -p "$DEPLOY_DIR/fastapi/app"
+echo "Tagging image"
+docker tag $REGISTRY_NAME:$TAG $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$REGISTRY_NAME:$TAG
 
-cp app/main.py "$DEPLOY_DIR/fastapi/"
-cp .env.example "$DEPLOY_DIR/fastapi/.env"
-touch "$DEPLOY_DIR/fastapi/__init__.py"
-
-rsync -av --exclude='main.py' app/ "$DEPLOY_DIR/fastapi/app/"
-
-pip install -r "requirements.txt" --target "$DEPLOY_DIR/lambda_layer/python/lib/python3.13/site-packages" --only-binary=:all: --platform manylinux2014_x86_64
-
-sam deploy \
-    --template-file template.yaml \
-    --resolve-s3 \
-    --stack-name "$PROJECT_NAME" \
-    --capabilities CAPABILITY_NAMED_IAM
-
-rm -r "$DEPLOY_DIR"
-
-echo "Deployed successfully"
-echo "Fill .env file with environment variables from deploy response to make app work!!!"
+echo "Pushing image to ECR"
+docker push $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$REGISTRY_NAME:$TAG

@@ -3,7 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: CloudFormation template for Diary Application (FAST API)
 
 Resources:
-  LambdaExecutionRole:
+  ExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: LambdaDDBAccessRole
@@ -58,29 +58,6 @@ Resources:
       SupportedIdentityProviders:
         - COGNITO
 
-
-  PackageLayer:
-    Type: 'AWS::Serverless::LayerVersion'
-    Properties:
-      LayerName: package-layer
-      ContentUri: ./deploy/lambda_layer
-      CompatibleRuntimes:
-        - python3.13
-      RetentionPolicy: Retain
-
-  FASTAPIFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: FASTAPIFunction
-      Handler: main.handler
-      Runtime: python3.13
-      CodeUri: ./deploy/fastapi
-      Role: !GetAtt LambdaExecutionRole.Arn
-      Layers:
-        - Ref: PackageLayer
-      FunctionUrlConfig:
-        AuthType: NONE
-
   PostsTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -98,9 +75,9 @@ Outputs:
   CognitoUserPoolClientId:
     Description: "Cognito User Pool Client ID"
     Value: !Ref CognitoUserPoolClient
-  PostsTableName:
-    Description: The name of the DynamoDB table
-    Value: !Ref PostsTable
   CognitoUserPoolClientSecret:
     Description: "Cognito User Pool Client Secret"
     Value: !GetAtt CognitoUserPoolClient.ClientSecret
+  PostsTableName:
+    Description: The name of the DynamoDB table
+    Value: !Ref PostsTable

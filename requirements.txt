@@ -1,5 +1,5 @@
-fastapi
-mangum
+fastapi[standard]
+boto3
 pyjwt
 pydantic_settings
 python-multipart
